@@ -81,13 +81,13 @@ Current behaviour (`index.add_document`):
 
 ## Harness and guardrails
 
-`agent.py` runs a LangChain `create_agent` on Gemini (`gemini-3.6-flash`), with the tools from `server.py` over MCP and `AGENTS.md` as its system prompt (plus today's date, since several rules depend on dates).
+`agent.py` runs a LangChain `create_agent` on Gemini (`gemini-3.5-flash-lite`), with the tools from `server.py` over MCP and `AGENTS.md` as its system prompt (plus today's date, since several rules depend on dates).
 
 - **Approval:** a call to `add_document` pauses the agent (HumanInTheLoopMiddleware). The user sees the path and answers y/N in the terminal; with nobody at the keyboard (evaluation, `check.py`) the call is rejected.
 - **Call limits:** at most 6 tool calls and 8 model calls per question.
 - **Time limits and retries:** `main.py ask` stops after 150 s and prints the reason, and a tool call that takes over 60 s is abandoned (the model is told it failed). Per-minute rate limits and server errors are retried; a used-up daily quota, or a model with no free quota, is not.
-- **Model:** a fixed version, so the evaluation can be repeated. Google's alias `gemini-flash-latest` was not used: on 25 November 2026 it pointed to a newer model that timed out on Google's side (`uv run python agent.py --test-models` checks which models answer).
-- **Fallback model:** if the main model fails, `main.py ask` tries `gemini-3.5-flash`, then `gemini-flash-lite-latest`, and its last line names the model that answered. Evaluation never falls back, so every graded answer comes from one model; it waits out rate limits instead.
+- **Model:** a fixed version, so the evaluation can be repeated. Flash-Lite because on the free tier it allows 500 requests a day, while the full Flash models allow 20 and one evaluation run needs about 150. Google's alias `gemini-flash-latest` was not used: on 25 November 2026 it pointed to a newer model that timed out on Google's side (`uv run python agent.py --test-models` checks which models answer).
+- **Fallback model:** if the main model fails, `main.py ask` tries `gemini-3.1-flash-lite`, then `gemini-3.6-flash`, and its last line names the model that answered. Evaluation never falls back, so every graded answer comes from one model; it waits out rate limits instead.
 - **Extra guardrail, citation check:** after the agent answers, every `[source, location]` citation must match a passage that search returned in this run (two citations written in one bracket are checked separately), and an answer that isn't a refusal must cite something. Otherwise the answer is replaced by the refusal sentence, and the blocked draft is kept in the trace.
 
 > **TODO (yours):** your `AGENTS.md` rules, each with its reason, and one case where the citation check fired (listed in `eval/summary.md`; `main.py ask` also prints a note when it fires).
@@ -101,7 +101,7 @@ Current behaviour (`index.add_document`):
 
 Answers are cached, so a run stopped by the daily quota carries on where it left off; an answer whose searches all failed is not counted and runs again next time.
 
-An LLM judge then grades each answer with the rubric in `eval/judge_rubric.md`, using the question, the reference answer and the retrieved text, and returns `correct`, `supported` and a reason. Agreement with my own grades (`eval/human_labels.csv`) is reported as a percentage and Cohen's kappa.
+An LLM judge (`gemini-3.1-flash-lite`, a different model from the agent's, so it isn't grading its own answers) then grades each answer with the rubric in `eval/judge_rubric.md`, using the question, the reference answer and the retrieved text, and returns `correct`, `supported` and a reason. Agreement with my own grades (`eval/human_labels.csv`) is reported as a percentage and Cohen's kappa.
 
 > **TODO (yours):** your rubric, your agreement with the judge, and the results (correct, unsupported, correct refusals, wrong refusals) from `eval/summary.md`.
 

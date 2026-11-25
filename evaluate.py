@@ -51,7 +51,9 @@ HUMAN = EVAL / "human_labels.csv"
 ANSWERS = EVAL / "answers.jsonl"
 VERDICTS = EVAL / "judge.jsonl"
 K_VALUES = (1, 3, 5)
-JUDGE_MODEL = os.environ.get("JUDGE_MODEL", ag.MODEL)
+# A different model from the agent's, so the judge isn't grading its own answers
+# (and it uses a separate free daily quota). JUDGE_MODEL overrides it.
+JUDGE_MODEL = os.environ.get("JUDGE_MODEL", "gemini-3.1-flash-lite")
 GOOD = ("correct", "correct refusal")
 
 

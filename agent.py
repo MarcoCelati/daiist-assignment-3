@@ -43,13 +43,15 @@ ROOT = Path(__file__).resolve().parent
 SERVER = ROOT / "server.py"
 AGENTS_MD = ROOT / "AGENTS.md"
 
-# A fixed Gemini version, so evaluation results can be reproduced. (On 25 Nov 2026
-# the alias gemini-flash-latest pointed to a newer model that timed out on Google's
-# side; `--test-models` shows what answers now.) GEMINI_MODEL overrides it.
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
+# A fixed Gemini version, so evaluation results can be reproduced. Flash-Lite
+# because the free tier allows it 500 requests a day; the full Flash models allow
+# 20, and one evaluation needs about 150. (On 25 Nov 2026 the alias
+# gemini-flash-latest also timed out on Google's side.) GEMINI_MODEL overrides it;
+# `--test-models` shows which models answer.
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 # Tried in order when MODEL fails during `main.py ask` (no free quota, retired,
 # overloaded). Evaluation never falls back, so every graded answer comes from MODEL.
-FALLBACK_MODELS = ("gemini-3.5-flash", "gemini-flash-lite-latest")
+FALLBACK_MODELS = ("gemini-3.1-flash-lite", "gemini-3.6-flash")
 MAX_TOOL_CALLS = 6    # per question
 MAX_MODEL_CALLS = 8   # per question
 
