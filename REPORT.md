@@ -103,11 +103,29 @@ Answers are cached, so a run stopped by the daily quota carries on where it left
 
 An LLM judge (`gemini-3.1-flash-lite`, a different model from the agent's, so it isn't grading its own answers) then grades each answer with the rubric in `eval/judge_rubric.md`, using the question, the reference answer and the retrieved text, and returns `correct`, `supported` and a reason. Agreement with my own grades (`eval/human_labels.csv`) is reported as a percentage and Cohen's kappa.
 
+The first judge run marked three correct refusals (q12, q13, q15) wrong because the rubric didn't allow the where-to-check line that AGENTS.md asks for. I clarified the rubric and re-ran the judge. First run: 87% agreement on correct, κ 0.63. Second run: 97% agreement on correct, κ 0.89.
+
 > **TODO (yours):** your rubric, your agreement with the judge, and the results (correct, unsupported, correct refusals, wrong refusals) from `eval/summary.md`.
 
 ## Failures
 
-> **TODO (yours):** classify each failure in `eval/failures.csv` (retrieval miss, wrong answer from the right passage, unsupported claim, wrong refusal, bad test question), give the counts, and say what to fix first.
+Seven answers failed: five caught by both the judge and my grades, and two (q09, q28) only by my grades.
+
+| Cause | Count | Questions |
+|---|---|---|
+| Retrieval miss | 3 | q06, q11, q28 |
+| Unsupported claim | 2 | q09, q26 |
+| Wrong refusal | 1 | q01 |
+| Wrong answer from the right passage | 1 | q23 |
+| Bad test question | 0 | none |
+
+Retrieval misses are the largest group, and all three follow the same pattern. The agent found the passage for the first part of a multi-part question, answered from it, and never retrieved the passage holding the second part: the timing rules for q06, the requirement that the Student visa still be valid for q11, and the link between application date and visa length for q28. Its answers read as complete, so nothing signals the gap to the student. This matches the retrieval numbers: with the section design, hit@5 is 75% for single questions but 62% for multi.
+
+Both unsupported claims add a rule the passages don't contain. In q26 the agent filled a gap (whether delivery riders are employees) with general knowledge, turning a conditional answer into a flat no. In q09 it invented an exception for work placements. The wrong refusal, q01, is the other side of the agent's caution: it had the right passage but refused anyway, probably because rule 4 says related background doesn't count as an answer. The same caution got all nine unanswerable questions right. q23 is a plain arithmetic slip.
+
+No failure came from a bad test question, but writing the test set exposed weaknesses that I fixed or noted. I revised two references (q02, q07) after grading because the Student guide or caseworker guidance disagreed with Appendix Student. And q11's alternative locations for its second part weren't equivalent, since only one of them contains the rule that you must apply before your Student visa expires.
+
+**What to fix first:** retrieval for multi-part questions, because it's the most common cause and the hardest for a student to spot. The simplest change is to rule 1: have the agent run a separate search for each part of the question and check that every part is covered before answering. After that, I'd loosen rule 4's related-background line and re-check q01 against the traps it currently refuses correctly.
 
 ## Decision
 

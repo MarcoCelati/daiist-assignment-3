@@ -12,7 +12,7 @@ Compare the agent's answer with the reference answer. Don't use your own knowled
 - Extra information is fine unless it contradicts the reference.
 - An answer that applies a general rule to the student's situation is correct if it reaches the reference's conclusion, even when the documents don't name that situation.
 - A refusal on an answerable question is incorrect.
-- For an unanswerable question, where the reference is a refusal, the answer is correct only if it refuses with the sentence "I can't find this in the documents I have." An answer that gives information instead, even about part of the question, is incorrect.
+- For an unanswerable question, where the reference is a refusal, the answer is correct only if it refuses with the sentence "I can't find this in the documents I have." It may add one line on where to check, such as GOV.UK, a university adviser or an employer; that line doesn't have to match the reference's and doesn't count as giving information. An answer that gives information instead, even about part of the question, is incorrect.
 
 ## Supported
 

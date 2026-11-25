@@ -452,11 +452,29 @@ def results_table(rows, answers, verdicts, labels) -> list[dict]:
 
 
 def failures_table(table: list[dict]) -> list[dict]:
+    """Every answer that failed by the judge's verdict or by your own grade.
+    `cause` and `notes` are yours (retrieval miss, wrong answer from the right
+    passage, unsupported claim, wrong refusal, or bad test question); they are
+    kept from the existing eval/failures.csv when this is rewritten."""
     keep = ("id", "kind", "outcome", "retrieved_expected", "refused", "citations", "citation_check_reason",
-            "judge_correct", "judge_supported", "judge_reason", "question", "answer")
-    # `cause` is yours: retrieval miss, wrong answer from the right passage,
-    # unsupported claim, wrong refusal, or bad test question.
-    return [{k: t[k] for k in keep} | {"cause": "", "notes": ""} for t in table if t["outcome"] not in GOOD]
+            "judge_correct", "judge_supported", "judge_reason", "human_correct", "human_supported",
+            "question", "answer")
+    yours = {}
+    path = EVAL / "failures.csv"
+    if path.is_file():
+        with path.open(newline="", encoding="utf-8-sig") as f:
+            yours = {r["id"]: r for r in csv.DictReader(f)}
+    rows = []
+    for t in table:
+        by_judge = t["outcome"] not in GOOD
+        by_you = 0 in (t.get("human_correct"), t.get("human_supported"))
+        if not (by_judge or by_you):
+            continue
+        failed_by = "judge and you" if by_judge and by_you else "judge" if by_judge else "you (judge passed it)"
+        old = yours.get(t["id"], {})
+        rows.append({k: t.get(k, "") for k in keep} | {"failed_by": failed_by, "cause": old.get("cause", ""),
+                                                       "notes": old.get("notes", "")})
+    return rows
 
 
 def pct(x: float) -> str:
@@ -586,14 +604,14 @@ def main(model=None, judge=None) -> int:
     write_grading_sheet(rows, answers)
     if not answered_all:
         notes.append("Some questions have no answer yet (quota or errors); run `main.py evaluate` again.")
-    verdicts, labels, agree = {}, {}, {}
+    verdicts, agree = {}, {}
+    labels = human_labels()  # also read here so eval/failures.csv lists the failures you found
     if not args.answers_only:
         print("\n== 3. LLM judge")
         verdicts, judged_all = judge_all(rows, answers, args.fresh, judge)
         if rubric_text() and not judged_all:
             notes.append("Some answers have no verdict yet; run `main.py evaluate` again.")
         print("\n== 4. Agreement with your grades")
-        labels = human_labels()
         agree = agreement(labels, verdicts)
         if len(labels) < 20:
             notes.append(f"eval/human_labels.csv has {len(labels)} graded answers; the brief asks for 20+.")

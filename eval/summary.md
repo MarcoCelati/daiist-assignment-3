@@ -26,11 +26,11 @@ The agent searches design `section` with k = 5 (index.CHOSEN_DESIGN, server.TOP_
 ## Cost and latency per question
 
 - Agent: 3.1 model calls, 8,148 input + 216 output tokens, 14.2 s (n = 30, model gemini-3.5-flash-lite).
-- Judge: 2,726 tokens (n = 30).
+- Judge: 2,771 tokens (n = 30).
 
 ## Judge vs your grades
 
 | | answers | agreement | Cohen's kappa | disagree on |
 |---|---|---|---|---|
-| correct | 30 | 87% | 0.63 | q12, q13, q15, q28 |
+| correct | 30 | 97% | 0.89 | q28 |
 | supported | 30 | 93% | 0.47 | q09, q23 |
