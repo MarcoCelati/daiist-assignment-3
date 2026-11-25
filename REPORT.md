@@ -52,7 +52,12 @@ Word counts are after cleaning. The set covers the same rules at three levels: t
 
 A hit means that a retrieved chunk covers an expected location (any one place for a single question, every needed passage for a multi one). "Words added to the prompt" is the total length of the top-k chunks.
 
-> **TODO (yours):** run `uv run python evaluate.py --retrieval-only`, paste the table from `eval/summary.md`, choose the design by the numbers (set `CHOSEN_DESIGN` in `index.py`, and `TOP_K` in `server.py` if needed), and explain the choice.
+| design | questions | hit@1 | hit@3 | hit@5 | single hit@5 | multi hit@5 | words top1 | top3 | top5 |
+|---|---|---|---|---|---|---|---|---|---|
+| fixed | 21 | 19% | 38% | 48% | 62% | 38% | 150 | 447 | 747 |
+| section | 21 | 14% | 48% | 67% | 75% | 62% | 161 | 472 | 811 |
+
+I chose "section" because although there is a small tradeoff with it performing slightly worse for 1st (14% vs. 19%), it performs much better for top3 (48% vs. 38%) and top5 (67% vs. 48%), and as our agent reads it as long as it is in the top 5, then it doesn't matter whether it is 1st or 5th.
 
 ## Tools and subagent
 
