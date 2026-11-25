@@ -13,9 +13,11 @@ The agent searches design `section` with k = 5 (index.CHOSEN_DESIGN, server.TOP_
 
 | outcome | single | multi | unanswerable | total |
 |---|---|---|---|---|
+| correct | 7 | 9 | 0 | 16 |
+| incorrect | 0 | 3 | 0 | 3 |
+| unsupported | 0 | 1 | 0 | 1 |
 | wrong refusal | 1 | 0 | 0 | 1 |
 | correct refusal | 0 | 0 | 9 | 9 |
-| answered (not judged) | 7 | 13 | 0 | 20 |
 
 - Answers with citations: 20; all citations valid in 20 of them.
 - Citation check fired on 0 question(s): none.
@@ -24,4 +26,11 @@ The agent searches design `section` with k = 5 (index.CHOSEN_DESIGN, server.TOP_
 ## Cost and latency per question
 
 - Agent: 3.1 model calls, 8,148 input + 216 output tokens, 14.2 s (n = 30, model gemini-3.5-flash-lite).
-- Judge: not run yet.
+- Judge: 2,726 tokens (n = 30).
+
+## Judge vs your grades
+
+| | answers | agreement | Cohen's kappa | disagree on |
+|---|---|---|---|---|
+| correct | 30 | 87% | 0.63 | q12, q13, q15, q28 |
+| supported | 30 | 93% | 0.47 | q09, q23 |
