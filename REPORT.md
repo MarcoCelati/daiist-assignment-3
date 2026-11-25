@@ -77,7 +77,33 @@ Current behaviour (`index.add_document`):
 - A changed file with the same name replaces its old chunks.
 - A file named like a corpus document is refused, so the core corpus can't be overwritten.
 
-> **TODO (yours):** confirm or change this behaviour and give your reason. Then run the demo with `uv run python evaluate.py --demo <question id> <file>` (after your final evaluation), and paste the question, the document and the answers before and after from `eval/demo_add_document.md`.
+> **TODO (yours):** confirm or change this behaviour and give your reason.
+
+**Demo, q12** (`uv run python evaluate.py --demo q12 demo_page.html`, saved in `eval/demo_add_document.md`):
+
+**Question (unanswerable):** My employer isn't a licensed sponsor. Can they get a licence before my Graduate visa runs out, and how long does that take?
+
+**Document added:** `demo_page.html`
+
+**add_document said:** Added 'demo-page': 60 chunks, 60 newly embedded, in design 'section'.
+
+**Before**
+
+> I can't find this in the documents I have.
+>
+> Please check GOV.UK for official guidance on sponsor licence application processing times and requirements, or speak with an immigration adviser or your employer's HR team.
+
+Citations: none
+
+**After**
+
+> Yes, your employer can apply for a sponsor licence before your Graduate visa runs out.
+>
+> Most sponsor licence applications are dealt with in less than 8 weeks, though UK Visas and Immigration (UKVI) may need to visit the business [demo-page, How long it takes to get a decision]. Additionally, your employer may be able to pay an extra £750 to get a decision within 10 working days, though this faster service is limited to a small number of applications each working day on a first-come, first-served basis [demo-page, How long it takes to get a decision].
+
+Citations: [demo-page, How long it takes to get a decision]
+
+Before adding the page, the agent refused q12 with the refusal sentence. After adding GOV.UK's "UK visa sponsorship for employers" guide (saved as demo_page.html and split into 60 chunks), it answered with the under-8-weeks decision time, the possible UKVI visit and the £750 option for a decision within 10 working days, each cited to the new document. Its opening sentence, though, says the employer can get a licence before the Graduate visa runs out, which the page can't support, because that depends on how much time is left on the visa. Adding a document closed the coverage gap, but it didn't stop the agent overstating.
 
 ## Harness and guardrails
 
