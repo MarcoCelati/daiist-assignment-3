@@ -72,10 +72,12 @@ def search(query: str) -> CallToolResult:
     except Exception as error:  # quota, missing index...: tell the agent, don't crash
         log.warning(f"search failed: {type(error).__name__}: {error}")
         return CallToolResult(content=[TextContent(type="text", text=f"Search failed: {error}")], is_error=True)
-    keep = ("id", "source", "location", "heading_path", "sections", "paths", "rules", "url", "title", "score", "words")
+    keep = ("id", "source", "location", "heading_path", "sections", "paths", "rules", "url", "title", "score", "words",
+            "text")
     return CallToolResult(
         content=[TextContent(type="text", text=format_results(results))],
-        # Machine-readable copy for agent.py's citation check and evaluate.py; not shown to the model.
+        # Machine-readable copy for agent.py's citation check and evaluate.py. It includes the
+        # passage text because some clients (Claude Code) show the model this copy, not `content`.
         structured_content={"results": [{k: r.get(k) for k in keep} | {"label": citation_label(r)} for r in results]},
     )
 

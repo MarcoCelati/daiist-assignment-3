@@ -68,7 +68,55 @@ I chose "section" because although there is a small tradeoff with it performing 
 
 The subagent (`.claude/agents/corpus-researcher.md`) can use only the search tool. It must search before answering, answer only from the returned passages, cite every claim with its label, and otherwise reply with the refusal sentence.
 
-> **TODO (yours):** one search result (from `uv run python main.py ask "..."` or your editor), and one transcript of the subagent in Claude Code or Copilot.
+**One search result.** `check.py` calling `search` with q01, "It's been three years since my bachelor's. Will the gap count against me?" (first result, as `check.py` prints it):
+
+```
+Result 1: cite as [graduate-caseworker-guidance, Graduate: period to grant]
+Graduate caseworker guidance (accessible version) > Grant or refuse > Graduate: period to grant
+https://www.gov.uk/government/publications/graduate-caseworker-guidance/graduate-caseworker-guidance-accessible-version
+The period of permission to be granted to an applicant is dependent on the type of course studied and the da...
+```
+
+**Subagent transcript (Claude Code, 25 November 2026):**
+
+```
+> Use the corpus-researcher subagent to answer: Can I work during my master's?
+
+● corpus-researcher(Work rights during master's)
+Backgrounded agent (↓ to manage · ctrl+o to expand)
+
+I've asked the corpus-researcher agent to look this up in the GOV.UK documents. It's checking the weekly hour limits for a master's on a Student visa, vacation work, banned types of work, course placements, and whether you can work once the course ends. I'll pass on its cited answer when it finishes.
+
+Waiting for 1 background agent to finish
+
+Agent "Work rights during master's" finished · 24s
+
+Yes, with limits. This assumes you're on a UK Student visa doing a full-time master's at a higher education provider with a track record of compliance (most universities). The answer comes from the corpus-researcher agent's search of the GOV.UK documents.
+
+How much you can work
+- During term: up to 20 hours a week [appendix-student, ST 26.1].
+- During holidays: full-time, including the period before your course starts [appendix-student, ST 26.1; student-caseworker-guidance, Work conditions].
+- Part-time course, or a sponsor that isn't a higher education provider with a track record of compliance: no ordinary jobs. You can only do a work placement that's part of the course, or be a Student Union Sabbatical Officer [appendix-student, ST 26.1; student-caseworker-guidance, Work conditions].
+
+What you can't do [appendix-student, ST 26.1]
+- Be self-employed or run a business. The only exception is while an endorsed Innovator Founder application is pending [ST 26.6].
+- Work as a professional sportsperson or sports coach. Amateur play or coaching for your university or BUCS in return for a scholarship is allowed [student-caseworker-guidance, Professional sportsperson].
+- Work as an entertainer.
+- Fill a permanent full-time vacancy.
+
+Work placements: allowed if they're an assessed, integral part of the course. On a degree-level course, a placement can't be longer than half the total course length [appendix-student, ST 26.1, ST 16.1].
+
+After your course ends
+- Any time left on your visa counts as outside term, so you can work full-time [student-caseworker-guidance, Work conditions].
+- If you apply for a Graduate visa before your Student visa expires, you can start a full-time permanent job once you've completed the course, while the application is being decided [appendix-student, ST 26.6; graduate-visa-guide, When to apply].
+- If you apply for a Skilled Worker visa instead, you can start up to 3 months before your course completion date [appendix-student, ST 26.6].
+
+Where your limit is shown: your entry clearance shows "Work limit 20 hrs p/w term time". Permissions granted after 31 October 2024 come as an eVisa, which you check in your UKVI account [student-caseworker-guidance]. The documents don't say whether the work conditions appear on the eVisa itself.
+
+Not in the documents: how a "week" is counted, or how term and vacation dates are set. Your university decides its term dates, so check with them before taking on more hours.
+```
+
+> **TODO (yours):** anything you want to say about the transcript.
 
 ## Adding a document
 
