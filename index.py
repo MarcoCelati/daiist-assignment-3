@@ -97,7 +97,14 @@ BATCH_SIZE = 20        # texts per API call
 DOC_PREFIX = "title: {title} | text: {text}"
 QUERY_PREFIX = "task: search result | query: {query}"
 
-RULE_ID = re.compile(r"^([A-Z]{2,5} \d+(?:\.\d+)+[A-Za-z]?)\.?\s")
+# A rule number at the start of a paragraph, e.g. "ST 4.2." GOV.UK writes one
+# rule without the space ("ST26.1."); it is stored as "ST 26.1" like the rest.
+RULE_ID = re.compile(r"^([A-Z]{2,5}) ?(\d+(?:\.\d+)+[A-Za-z]?)\.?\s")
+
+
+def rule_id(text: str) -> str | None:
+    found = RULE_ID.match(text)
+    return f"{found.group(1)} {found.group(2)}" if found else None
 
 
 class QuotaExhausted(RuntimeError):
@@ -176,12 +183,11 @@ def html_to_blocks(body: str, top_heading: str | None = None) -> list[dict]:
             return
         if any(h.lower() in SKIP_SECTIONS for _, h in path):
             return
-        rule = RULE_ID.match(text)
         blocks.append({
             "text": text,
             "heading": path[-1][1] if path else "Introduction",
             "heading_path": " > ".join(h for _, h in path) or "Introduction",
-            "rule": rule.group(1) if rule else None,
+            "rule": rule_id(text),
         })
 
     def walk(node) -> None:
@@ -408,11 +414,22 @@ def embed_and_store(chunks: list[dict], design: str, origin: str = "corpus") -> 
     col = collection(design)
     unique = {chunk_id(c): c for c in reversed(chunks)}  # identical chunks: keep the first
     ids = [i for i in dict.fromkeys(chunk_id(c) for c in chunks)]
-    have = set()
+
+    def metadata(c: dict) -> dict:
+        return {k: c[k] for k in METADATA_FIELDS} | {"origin": origin}
+
+    stored = {}
     for s in range(0, len(ids), 500):
-        have |= set(col.get(ids=ids[s:s + 500], include=[])["ids"])
-    todo = [(i, unique[i]) for i in ids if i not in have]
-    log.info(f"[{design}] {len(ids)} chunks, {len(have)} already stored, {len(todo)} to embed")
+        got = col.get(ids=ids[s:s + 500], include=["metadatas"])
+        stored.update(zip(got["ids"], got["metadatas"]))
+    # Same text but new labels (e.g. a rule number now recognised): update them, no API call.
+    relabel = [i for i in ids if i in stored and stored[i] != metadata(unique[i])]
+    for s in range(0, len(relabel), 500):
+        batch = relabel[s:s + 500]
+        col.update(ids=batch, metadatas=[metadata(unique[i]) for i in batch])
+    todo = [(i, unique[i]) for i in ids if i not in stored]
+    log.info(f"[{design}] {len(ids)} chunks, {len(stored)} already stored"
+             f"{f' ({len(relabel)} relabelled)' if relabel else ''}, {len(todo)} to embed")
 
     done = 0
     for s in range(0, len(todo), BATCH_SIZE):
@@ -423,7 +440,7 @@ def embed_and_store(chunks: list[dict], design: str, origin: str = "corpus") -> 
             ids=[i for i, _ in batch],
             embeddings=vectors,
             documents=[c["text"] for _, c in batch],
-            metadatas=[{k: c[k] for k in METADATA_FIELDS} | {"origin": origin} for _, c in batch],
+            metadatas=[metadata(c) for _, c in batch],
         )
         done += len(batch)
         log.info(f"  [{design}] saved {done}/{len(todo)}")
@@ -467,12 +484,13 @@ def embed_query(query: str) -> list[float]:
     return cache[key]
 
 
-def search(query: str, k: int = 5, design: str | None = None) -> list[dict]:
-    """Top-k chunks for a question, best first, each with its citation fields."""
+def search(query: str, k: int = 5, design: str | None = None, where: dict | None = None) -> list[dict]:
+    """Top-k chunks for a question, best first, each with its citation fields.
+    `where` filters on metadata, e.g. {"origin": "corpus"} skips added documents."""
     col = collection(design or CHOSEN_DESIGN)
     if col.count() == 0:
         raise RuntimeError(f"index/ has no '{design or CHOSEN_DESIGN}' chunks. Run `uv run python main.py index` first.")
-    result = col.query(query_embeddings=[embed_query(query)], n_results=min(k, col.count()),
+    result = col.query(query_embeddings=[embed_query(query)], n_results=min(k, col.count()), where=where,
                        include=["documents", "metadatas", "distances"])
     return [
         {"id": i, "text": doc, "score": round(1 - dist, 4), **meta}
@@ -517,9 +535,8 @@ def file_blocks(path: Path) -> tuple[str, list[dict]]:
             if para.startswith("#"):
                 heading = clean(para.lstrip("#"))
             elif para:
-                rule = RULE_ID.match(clean(para))
                 blocks.append({"text": clean(para), "heading": heading, "heading_path": heading,
-                               "rule": rule.group(1) if rule else None})
+                               "rule": rule_id(clean(para))})
     else:
         raise ValueError(f"Unsupported file type {suffix!r}: use .html, .json, .pdf, .md or .txt")
     return title, blocks

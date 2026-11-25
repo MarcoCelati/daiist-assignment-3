@@ -103,7 +103,7 @@ Immigration Rules: Appendix Student, https://www.gov.uk/guidance/immigration-rul
 - `Information on the Confirmation of Acceptance for Studies requirement` (rule ST 23.1)
 - `Decision on application for a Student` (rules ST 24.1 to ST 24.2)
 - `Period and conditions of grant for a Student` (rules ST 25.1 to ST 25.3)
-- `Work Conditions for a Student` (rules ST 26.2 to ST 26.8)
+- `Work Conditions for a Student` (rules ST 26.1 to ST 26.8)
 - `Study Conditions` (rules ST 27.1 to ST 27.7)
   - `Validity requirements for a dependent partner or dependent child of a Student` (rules ST 28.1 to ST 28.5)
     - `Suitability requirements for a dependent partner or dependent child of a Student` (rules ST 29.1 to ST 29.2)
