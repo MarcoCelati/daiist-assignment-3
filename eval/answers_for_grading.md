@@ -2287,7 +2287,7 @@ GR 5.4 The qualification must have been gained during the last grant of permissi
 
 **Question:** I saw reports that students who applied between 2023 and 2026 might get part of their visa fee back. Is that real, and do I need to claim it?
 
-**Reference answer:** I can't confirm that from the guidance I have. It doesn't mention any partial refund of Student visa fees for people who applied between 2023 and 2026, so I can't tell you whether the reports are accurate, whether you'd qualify, or whether you'd need to claim. The only refunds it mentions are for withdrawn applications and a health surcharge refund for people working in public-sector healthcare, and neither of those is the refund in the reports. To check, look for an official Home Office announcement on GOV.UK, or ask your university's international student advice team, who can tell you whether anything has been confirmed and how to claim.
+**Reference answer:** I can't find this in the documents I have. To check, look for an official Home Office announcement on GOV.UK or ask your university's international student advice team.
 
 **Agent's answer:**
 
