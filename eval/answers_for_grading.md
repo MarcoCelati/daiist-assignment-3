@@ -107,7 +107,7 @@ Read the guidance for more information about when you need to prove your studies
 
 **Question:** Can I transfer to a different university after I arrive, or do I need a whole new visa?
 
-**Reference answer:** No, not on your current visa: you can only change course without a new application if you stay at the university you're already studying at. To move to a different university you need a new Student visa, and the guidance says that application has to be made from overseas before you change course.
+**Reference answer:** No, not on your current visa: you can only change course without a new application if you stay at the university you're already studying at. To move to a different university you need a new Student visa application before you change course.
 
 **Agent's answer:**
 
@@ -459,7 +459,7 @@ ST 14.5. If the applicant is sponsored by a probationary sponsor, they must not 
 
 **Question:** I'm doing a one-year taught master's. Can my wife and our toddler come with me as dependants?
 
-**Reference answer:** No. For postgraduate courses starting on or after 1 January 2024, you can only bring dependants if the course is a PhD or other doctorate or a research-based higher degree, so a one-year taught master's doesn't qualify. The exception is a government-sponsored student on a course lasting longer than 6 months.
+**Reference answer:** No. For postgraduate courses starting on or after 1 January 2024, you can only bring dependants if the course is a PhD or other doctorate or a research-based higher degree, so a one-year taught master's doesn't qualify. The exception is a government-sponsored student on a full-time course of 6 months or longer.
 
 **Agent's answer:**
 

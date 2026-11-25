@@ -450,7 +450,7 @@ From `[student-visa-guide, Applying from outside the UK]`:
 
 > The earliest you can apply for a visa is 6 months before you start your course.
 
-Also in: `[appendix-student, ST 4.1]`
+Also in: `[appendix-student, ST 4.1]`, `[appendix-student, ST 4.2]`
 
 ## q23 (multi)
 
@@ -692,7 +692,7 @@ From `[graduate-visa-guide, How much it costs]`:
 >
 > You’ll be told how much you need to pay when you apply.
 
-Also in: `[graduate-visa-guide, Overview > How much it costs]`
+Also in: `[graduate-visa-guide, Overview > How much it costs]`, `[graduate-visa-guide, How much it costs > Healthcare surcharge]`, `[graduate-visa-guide, Overview > How long you can stay]`
 
 ## q29 (single)
 
