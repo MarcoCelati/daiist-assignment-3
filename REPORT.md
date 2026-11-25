@@ -77,7 +77,7 @@ Current behaviour (`index.add_document`):
 - A changed file with the same name replaces its old chunks.
 - A file named like a corpus document is refused, so the core corpus can't be overwritten.
 
-> **TODO (yours):** confirm or change this behaviour and give your reason.
+I'm keeping all three rules. Adding the same file again doesn't re-embed anything and just tells the user nothing changed, so it's harmless. The gap is when the same page is saved under a different file name. Then it gets stored twice, and the copies can push other passages out of the top 5. Missed passages were the most common failure in my results, so I'd fix this by checking for duplicate text instead of only the file name. Replacing a changed file matters because GOV.UK pages get updated (the living-cost amounts, for example), and a student shouldn't see the old amount next to the new one. Refusing files named like a corpus document stops someone overwriting one of the eight official documents by accident, which would change what the answers and citations are based on.
 
 **Demo, q12** (`uv run python evaluate.py --demo q12 demo_page.html`, saved in `eval/demo_add_document.md`):
 
